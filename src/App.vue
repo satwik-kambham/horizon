@@ -4,6 +4,6 @@
 
 <template>
   <main>
-    <h1>Hello from horizon</h1>
+    <h1 class="text-3xl">Hello from horizon</h1>
   </main>
 </template>
