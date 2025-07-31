@@ -54,6 +54,9 @@
           })
           rust-analyzer
           nodejs
+          vscode-langservers-extracted
+          typescript-language-server
+          vue-language-server
 
           # Android deps
           androidPkgs.androidsdk
