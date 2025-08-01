@@ -1,10 +1,12 @@
-import { MockAIChatBackend, AIChatBackend } from './AIChatBackend';
+import { AIChatBackend } from './AIChatBackend';
+import { HuggingFaceAIChatBackend } from './HuggingFaceAIChatBackend';
 
 export class AIChatService {
   private currentBackend: AIChatBackend;
 
   constructor() {
-    this.currentBackend = new MockAIChatBackend();
+    // Use HuggingFace backend by default, fallback to mock if needed
+    this.currentBackend = new HuggingFaceAIChatBackend();
   }
 
   setBackend(backend: AIChatBackend): void {

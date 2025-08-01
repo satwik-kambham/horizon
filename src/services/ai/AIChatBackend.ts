@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-interface ChatMessage {
+export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }
