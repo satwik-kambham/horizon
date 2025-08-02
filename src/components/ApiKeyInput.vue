@@ -11,14 +11,12 @@
         class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useSettingsStore } from '../stores/settings';
+import { ref } from "vue";
+import { useSettingsStore } from "../stores/settings";
 
 const settingsStore = useSettingsStore();
-
 </script>

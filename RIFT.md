@@ -16,3 +16,5 @@ This a cross platform desktop and mobile application built with Vite and Tauri.
    - `vite.config.ts`: Vite configuration
    - `tsconfig.json`: TypeScript configuration
    - `tauri.conf.json`: Tauri configuration
+
+- All styling should be done only using tailwind.

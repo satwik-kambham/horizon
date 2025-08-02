@@ -1,7 +1,7 @@
-import { ref } from 'vue';
+import { ref } from "vue";
 
 export interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
 }
 
@@ -20,14 +20,14 @@ export class MockAIChatBackend implements AIChatBackend {
 
   async sendMessage(message: string): Promise<string> {
     this.conversationHistory.value.push({
-      role: 'user',
+      role: "user",
       content: message,
     });
 
     const mockResponse = `You said: "${message}". This is a mock response.`;
 
     this.conversationHistory.value.push({
-      role: 'assistant',
+      role: "assistant",
       content: mockResponse,
     });
 
