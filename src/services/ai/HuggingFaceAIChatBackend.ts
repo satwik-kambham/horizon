@@ -6,6 +6,7 @@ export class HuggingFaceAIChatBackend implements AIChatBackend {
   private conversationHistory = ref<ChatMessage[]>([]);
   private generator: any;
   private modelId = "Qwen2.5-0.5B-Instruct";
+  private status = ref<'ready' | 'initializing' | 'error'>('initializing');
 
   constructor() {
     this.initializeModel();
@@ -13,16 +14,16 @@ export class HuggingFaceAIChatBackend implements AIChatBackend {
 
   private async initializeModel() {
     try {
-      console.log("Initializing Model");
       env.allowRemoteModels = false;
       env.allowLocalModels = true;
       env.localModelPath = "/models";
       this.generator = await pipeline("text-generation", this.modelId, {
         dtype: "q4f16",
       });
-      console.log("Model initialized successfully");
+      this.status.value = 'ready';
     } catch (error) {
       console.error("Error initializing Hugging Face model:", error);
+      this.status.value = 'error';
     }
   }
 
@@ -69,5 +70,9 @@ export class HuggingFaceAIChatBackend implements AIChatBackend {
 
   clearConversation(): void {
     this.conversationHistory.value = [];
+  }
+
+  getBackendStatus(): 'ready' | 'initializing' | 'error' {
+    return this.status.value;
   }
 }

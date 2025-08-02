@@ -9,6 +9,7 @@ export interface AIChatBackend {
   sendMessage(message: string): Promise<string>;
   getConversationHistory(): ChatMessage[];
   clearConversation(): void;
+  getBackendStatus(): 'ready' | 'initializing' | 'error';
 }
 
 export class MockAIChatBackend implements AIChatBackend {
@@ -40,5 +41,9 @@ export class MockAIChatBackend implements AIChatBackend {
 
   clearConversation(): void {
     this.conversationHistory.value = [];
+  }
+
+  getBackendStatus(): 'ready' | 'initializing' | 'error' {
+    return 'ready';
   }
 }
