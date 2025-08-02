@@ -4,12 +4,23 @@
   >
     <h2 class="text-2xl font-bold mb-4">AI Chat</h2>
     <div class="mb-4">
-      <div v-if="backendStatus === 'initializing'" class="p-2 bg-yellow-100 text-yellow-800 rounded">
-        <span class="font-semibold">Initializing:</span> Backend is loading, please wait...</div>
-      <div v-else-if="backendStatus === 'error'" class="p-2 bg-red-100 text-red-800 rounded">
-        <span class="font-semibold">Error:</span> Backend initialization failed. Please check the console for errors.</div>
+      <div
+        v-if="backendStatus === 'initializing'"
+        class="p-2 bg-yellow-100 text-yellow-800 rounded"
+      >
+        <span class="font-semibold">Initializing:</span> Backend is loading,
+        please wait...
+      </div>
+      <div
+        v-else-if="backendStatus === 'error'"
+        class="p-2 bg-red-100 text-red-800 rounded"
+      >
+        <span class="font-semibold">Error:</span> Backend initialization failed.
+        Please check the console for errors.
+      </div>
       <div v-else class="p-2 bg-green-100 text-green-800 rounded">
-        <span class="font-semibold">Ready:</span> Backend is ready</div>
+        <span class="font-semibold">Ready:</span> Backend is ready
+      </div>
     </div>
     <div
       class="chat-history mb-4 h-64 overflow-y-auto border p-2 rounded flex flex-col gap-2"
@@ -57,7 +68,7 @@ import { aiChatService } from "../services/ai/AIChatService";
 
 const newMessage = ref("");
 const conversationHistory = aiChatService.getConversationHistory();
-const backendStatus = ref<'ready' | 'initializing' | 'error'>('initializing');
+const backendStatus = ref<"ready" | "initializing" | "error">("initializing");
 
 // Update status from backend
 onMounted(() => {
@@ -65,9 +76,12 @@ onMounted(() => {
 });
 
 // Watch for status changes
-watch(() => aiChatService.currentBackend.getBackendStatus(), (newStatus) => {
-  backendStatus.value = newStatus;
-});
+watch(
+  () => aiChatService.currentBackend.getBackendStatus(),
+  (newStatus) => {
+    backendStatus.value = newStatus;
+  },
+);
 
 // Poll for status updates every 2 seconds
 setInterval(() => {
@@ -77,8 +91,10 @@ setInterval(() => {
 const sendMessage = async () => {
   if (newMessage.value.trim() === "") return;
 
-  if (backendStatus.value !== 'ready') {
-    alert('Backend is not ready yet. Please wait for initialization to complete.');
+  if (backendStatus.value !== "ready") {
+    alert(
+      "Backend is not ready yet. Please wait for initialization to complete.",
+    );
     return;
   }
 
