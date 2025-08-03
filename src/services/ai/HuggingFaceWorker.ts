@@ -1,17 +1,21 @@
 import { pipeline, TextStreamer, env } from "@huggingface/transformers";
 import { ChatMessage } from "./AIChatBackend";
 
-const modelId = "Qwen2.5-0.5B-Instruct";
+const modelId = "HuggingFaceTB/SmolLM2-135M-Instruct";
 let generator: any = null;
 let isInitialized = false;
 
 async function initializeModel() {
   try {
-    env.allowRemoteModels = false;
-    env.allowLocalModels = true;
-    env.localModelPath = "/models";
+    env.allowRemoteModels = true;
+    env.allowLocalModels = false;
+    env.useBrowserCache  = false;
+    // env.localModelPath = "/models";
     generator = await pipeline("text-generation", modelId, {
       dtype: "q4f16",
+      progress_callback: (progressInfo) => {
+        console.log(progressInfo);
+      },
     });
     isInitialized = true;
     postMessage({ type: "status", status: "ready" });

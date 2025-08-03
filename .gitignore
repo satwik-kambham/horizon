@@ -14,3 +14,4 @@ dist-ssr
 
 .direnv
 public/models
+src-tauri/gen/android/keystore.properties
