@@ -70,37 +70,29 @@ const newMessage = ref("");
 const conversationHistory = aiChatService.getConversationHistory();
 const backendStatus = ref<"ready" | "initializing" | "error">("initializing");
 
-// Update status from backend
 onMounted(() => {
   backendStatus.value = aiChatService.currentBackend.getBackendStatus();
 });
 
-// Watch for status changes
 watch(
   () => aiChatService.currentBackend.getBackendStatus(),
   (newStatus) => {
     backendStatus.value = newStatus;
-  },
+  }
 );
-
-// Poll for status updates every 2 seconds
-setInterval(() => {
-  backendStatus.value = aiChatService.currentBackend.getBackendStatus();
-}, 2000);
 
 const sendMessage = async () => {
   if (newMessage.value.trim() === "") return;
 
   if (backendStatus.value !== "ready") {
     alert(
-      "Backend is not ready yet. Please wait for initialization to complete.",
+      "Backend is not ready yet. Please wait for initialization to complete."
     );
     return;
   }
 
   try {
     const response = await aiChatService.sendMessage(newMessage.value);
-    conversationHistory.value = aiChatService.getConversationHistory();
     newMessage.value = "";
   } catch (error) {
     console.error("Error sending message:", error);
@@ -109,6 +101,5 @@ const sendMessage = async () => {
 
 const clearConversation = () => {
   aiChatService.clearConversation();
-  conversationHistory.value = [];
 };
 </script>

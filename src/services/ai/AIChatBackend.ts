@@ -6,14 +6,14 @@ export interface ChatMessage {
 }
 
 export interface AIChatBackend {
+  conversationHistory: ChatMessage[];
   sendMessage(message: string): Promise<string>;
-  getConversationHistory(): ChatMessage[];
   clearConversation(): void;
   getBackendStatus(): "ready" | "initializing" | "error";
 }
 
 export class MockAIChatBackend implements AIChatBackend {
-  private conversationHistory = ref<ChatMessage[]>([]);
+  public conversationHistory = ref<ChatMessage[]>([]);
 
   constructor() {
     this.conversationHistory.value = [];
@@ -33,10 +33,6 @@ export class MockAIChatBackend implements AIChatBackend {
     });
 
     return mockResponse;
-  }
-
-  getConversationHistory(): ChatMessage[] {
-    return this.conversationHistory.value;
   }
 
   clearConversation(): void {

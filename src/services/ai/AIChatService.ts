@@ -1,4 +1,4 @@
-import { AIChatBackend } from "./AIChatBackend";
+import { AIChatBackend, MockAIChatBackend } from "./AIChatBackend";
 import { HuggingFaceAIChatBackend } from "./HuggingFaceAIChatBackend";
 
 export class AIChatService {
@@ -17,7 +17,7 @@ export class AIChatService {
   }
 
   getConversationHistory() {
-    return this.currentBackend.getConversationHistory();
+    return this.currentBackend.conversationHistory;
   }
 
   clearConversation() {
