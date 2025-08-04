@@ -5,6 +5,7 @@ export class HuggingFaceAIChatBackend implements AIChatBackend {
   public conversationHistory = ref<ChatMessage[]>([]);
   private worker: Worker;
   private status = ref<"ready" | "initializing" | "error">("initializing");
+  public progress = ref<{ file: string, progress: number } | null>(null);
 
   constructor() {
     this.worker = new Worker(new URL("./HuggingFaceWorker.ts", import.meta.url), {
@@ -12,10 +13,14 @@ export class HuggingFaceAIChatBackend implements AIChatBackend {
     });
     
     this.worker.onmessage = (event) => {
-      const { type, status, response, partial_response, error, message } = event.data;
+      const { type, status, response, partial_response, error, message, progressInfo } = event.data;
       
       if (status) {
         this.status.value = status;
+      }
+      
+      if (type === "progress" && progressInfo) {
+        this.progress.value = progressInfo;
       }
       
       if (type === "response" && response) {

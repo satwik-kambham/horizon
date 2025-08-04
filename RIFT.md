@@ -19,3 +19,4 @@ This a cross platform desktop and mobile application built with Vite and Tauri.
 
 - All styling should be done only using tailwind.
 - The project can be run using the command `npm run tauri dev`
+- The user will provide error info if any. Do not try to read from the devtools.

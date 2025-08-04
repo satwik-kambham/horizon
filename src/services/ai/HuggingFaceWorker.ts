@@ -1,7 +1,7 @@
 import { pipeline, TextStreamer, env } from "@huggingface/transformers";
 import { ChatMessage } from "./AIChatBackend";
 
-const modelId = "HuggingFaceTB/SmolLM2-135M-Instruct";
+const modelId = "onnx-community/Qwen3-0.6B-ONNX";
 let generator: any = null;
 let isInitialized = false;
 
@@ -14,7 +14,7 @@ async function initializeModel() {
     generator = await pipeline("text-generation", modelId, {
       dtype: "q4f16",
       progress_callback: (progressInfo) => {
-        console.log(progressInfo);
+        postMessage({ type: "progress", progressInfo });
       },
     });
     isInitialized = true;

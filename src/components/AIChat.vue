@@ -22,6 +22,18 @@
         <span class="font-semibold">Ready:</span> Backend is ready
       </div>
     </div>
+    
+    <!-- Progress Bar -->
+    <div v-if="progress && backendStatus !== 'ready'" class="mb-4">
+      <div class="text-sm font-medium mb-1">Loading: {{ progress.file }}</div>
+      <div class="w-full bg-gray-200 rounded-full h-2.5">
+        <div
+          class="bg-blue-600 h-2.5 rounded-full"
+          :style="{ width: (progress.progress ?? 100) + '%' }"
+        ></div>
+      </div>
+      <div class="text-sm text-gray-600 mt-1">{{ Math.round(progress.progress ?? 100) }}%</div>
+    </div>
     <div
       class="chat-history mb-4 h-64 overflow-y-auto border p-2 rounded flex flex-col gap-2"
     >
@@ -63,12 +75,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { aiChatService } from "../services/ai/AIChatService";
 
 const newMessage = ref("");
 const conversationHistory = aiChatService.getConversationHistory();
 const backendStatus = ref<"ready" | "initializing" | "error">("initializing");
+
+const progress = computed(() => {
+  return aiChatService.currentBackend.progress.value;
+});
 
 onMounted(() => {
   backendStatus.value = aiChatService.currentBackend.getBackendStatus();
