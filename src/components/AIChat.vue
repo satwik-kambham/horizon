@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col h-full w-full">
-    <div class="bg-[#1f1f1f] rounded-lg shadow-lg overflow-hidden flex flex-col h-full w-full min-h-full">
+    <div
+      class="bg-[#1f1f1f] rounded-lg shadow-lg overflow-hidden flex flex-col h-full w-full min-h-full"
+    >
       <div class="p-4 border-b border-[#333]">
         <div
           v-if="backendStatus === 'initializing'"
@@ -13,15 +15,18 @@
           v-else-if="backendStatus === 'error'"
           class="p-2 bg-[#333] text-red-400 rounded"
         >
-          <span class="font-semibold">Error:</span> Backend initialization failed.
-          Please check the console for errors.
+          <span class="font-semibold">Error:</span> Backend initialization
+          failed. Please check the console for errors.
         </div>
         <div v-else class="p-2 bg-[#333] text-green-400 rounded">
           <span class="font-semibold">Ready:</span> Backend is ready
         </div>
       </div>
 
-      <div v-if="progress && backendStatus !== 'ready'" class="p-4 border-b border-[#333]">
+      <div
+        v-if="progress && backendStatus !== 'ready'"
+        class="p-4 border-b border-[#333]"
+      >
         <div class="text-sm font-medium mb-1">Loading: {{ progress.file }}</div>
         <div class="w-full bg-[#333] rounded-full h-2.5">
           <div
@@ -33,9 +38,11 @@
           {{ Math.round(progress.progress ?? 100) }}%
         </div>
       </div>
-      
+
       <div class="flex-grow overflow-hidden">
-        <div class="chat-history h-full overflow-y-auto p-4 flex flex-col gap-2">
+        <div
+          class="chat-history h-full overflow-y-auto p-4 flex flex-col gap-2"
+        >
           <div
             v-for="(message, index) in conversationHistory"
             :key="index"
@@ -51,7 +58,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="p-4 border-t border-[#333] flex flex-col gap-3">
         <div class="flex">
           <input
@@ -67,14 +74,26 @@
             Send
           </button>
         </div>
-        <button
-          @click="clearConversation"
-          class="bg-red-500 text-white px-4 py-3 rounded hover:bg-red-600 transition-colors"
-        >
-          Clear Conversation
-        </button>
+        <div class="flex gap-3">
+          <button
+            @click="clearConversation"
+            class="bg-red-500 text-white px-4 py-3 rounded hover:bg-red-600 transition-colors flex-1"
+          >
+            Clear
+          </button>
+          <button
+            @click="openExtraArgsModal"
+            class="bg-purple-500 text-white px-4 py-3 rounded hover:bg-purple-600 transition-colors flex-1"
+          >
+            Configure
+          </button>
+        </div>
       </div>
     </div>
+
+    <teleport to="body">
+      <ExtraArgsModal />
+    </teleport>
   </div>
 </template>
 
@@ -82,6 +101,7 @@
 import { ref, onMounted, watch, computed } from "vue";
 import { aiChatService } from "../services/ai/AIChatService";
 import { useSettingsStore } from "../stores/settings";
+import ExtraArgsModal from "./ExtraArgsModal.vue";
 
 const newMessage = ref("");
 const conversationHistory = aiChatService.getConversationHistory();
@@ -129,5 +149,9 @@ const sendMessage = async () => {
 
 const clearConversation = () => {
   aiChatService.clearConversation();
+};
+
+const openExtraArgsModal = () => {
+  settings.isSettingsOpen = true;
 };
 </script>

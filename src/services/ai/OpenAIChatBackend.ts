@@ -30,7 +30,9 @@ export class OpenAIChatBackend implements AIChatBackend {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(extraArgs?.apiKey ? { Authorization: `Bearer ${extraArgs?.apiKey}` } : {}),
+          ...(extraArgs?.apiKey
+            ? { Authorization: `Bearer ${extraArgs?.apiKey}` }
+            : {}),
         },
         body: JSON.stringify(requestBody),
       });

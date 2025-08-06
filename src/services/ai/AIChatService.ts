@@ -10,7 +10,7 @@ export class AIChatService {
   currentBackend: AIChatBackend;
 
   constructor() {
-    this.currentBackend = new MockAIChatBackend();
+    this.currentBackend = new OpenAIChatBackend();
   }
 
   setBackend(backend: AIChatBackend): void {
