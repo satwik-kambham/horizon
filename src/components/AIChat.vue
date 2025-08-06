@@ -22,8 +22,7 @@
         <span class="font-semibold">Ready:</span> Backend is ready
       </div>
     </div>
-    
-    <!-- Progress Bar -->
+
     <div v-if="progress && backendStatus !== 'ready'" class="mb-4">
       <div class="text-sm font-medium mb-1">Loading: {{ progress.file }}</div>
       <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -32,7 +31,9 @@
           :style="{ width: (progress.progress ?? 100) + '%' }"
         ></div>
       </div>
-      <div class="text-sm text-gray-600 mt-1">{{ Math.round(progress.progress ?? 100) }}%</div>
+      <div class="text-sm text-gray-600 mt-1">
+        {{ Math.round(progress.progress ?? 100) }}%
+      </div>
     </div>
     <div
       class="chat-history mb-4 h-64 overflow-y-auto border p-2 rounded flex flex-col gap-2"
@@ -77,13 +78,18 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from "vue";
 import { aiChatService } from "../services/ai/AIChatService";
+import { useSettingsStore } from "../stores/settings";
 
 const newMessage = ref("");
 const conversationHistory = aiChatService.getConversationHistory();
 const backendStatus = ref<"ready" | "initializing" | "error">("initializing");
+const settings = useSettingsStore();
 
 const progress = computed(() => {
-  return aiChatService.currentBackend.progress.value;
+  if (aiChatService.currentBackend.progress) {
+    return aiChatService.currentBackend.progress.value;
+  }
+  return null;
 });
 
 onMounted(() => {
@@ -94,7 +100,7 @@ watch(
   () => aiChatService.currentBackend.getBackendStatus(),
   (newStatus) => {
     backendStatus.value = newStatus;
-  }
+  },
 );
 
 const sendMessage = async () => {
@@ -102,13 +108,16 @@ const sendMessage = async () => {
 
   if (backendStatus.value !== "ready") {
     alert(
-      "Backend is not ready yet. Please wait for initialization to complete."
+      "Backend is not ready yet. Please wait for initialization to complete.",
     );
     return;
   }
 
   try {
-    const response = await aiChatService.sendMessage(newMessage.value);
+    const response = await aiChatService.sendMessage(
+      newMessage.value,
+      settings.extraChatArgs,
+    );
     newMessage.value = "";
   } catch (error) {
     console.error("Error sending message:", error);

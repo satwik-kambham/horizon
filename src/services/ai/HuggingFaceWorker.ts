@@ -9,7 +9,7 @@ async function initializeModel() {
   try {
     env.allowRemoteModels = true;
     env.allowLocalModels = false;
-    env.useBrowserCache  = false;
+    env.useBrowserCache = false;
     // env.localModelPath = "/models";
     generator = await pipeline("text-generation", modelId, {
       dtype: "q4f16",
@@ -30,7 +30,7 @@ async function generateResponse(conversationHistory: ChatMessage[]) {
     postMessage({ type: "error", message: "Model not initialized" });
     return;
   }
-  
+
   try {
     const output = await generator(conversationHistory, {
       max_new_tokens: 512,
@@ -42,7 +42,7 @@ async function generateResponse(conversationHistory: ChatMessage[]) {
         },
       }),
     });
-    
+
     const response = output[0].generated_text.at(-1).content;
     postMessage({ type: "response", response: response });
   } catch (error) {
@@ -53,7 +53,7 @@ async function generateResponse(conversationHistory: ChatMessage[]) {
 
 onmessage = async (event) => {
   const { type, payload } = event.data;
-  
+
   switch (type) {
     case "generate":
       await generateResponse(payload.conversationHistory);

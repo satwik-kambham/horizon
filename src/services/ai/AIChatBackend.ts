@@ -5,9 +5,17 @@ export interface ChatMessage {
   content: string;
 }
 
+export interface ExtraChatArgs {
+  modelName: string;
+  apiUrl: string;
+  temperature: number;
+  seed: number;
+  apiKey?: string;
+}
+
 export interface AIChatBackend {
   conversationHistory: ChatMessage[];
-  sendMessage(message: string): Promise<string>;
+  sendMessage(message: string, extraArgs?: ExtraChatArgs): Promise<string>;
   clearConversation(): void;
   getBackendStatus(): "ready" | "initializing" | "error";
 }
@@ -19,7 +27,10 @@ export class MockAIChatBackend implements AIChatBackend {
     this.conversationHistory.value = [];
   }
 
-  async sendMessage(message: string): Promise<string> {
+  async sendMessage(
+    message: string,
+    extraArgs?: ExtraChatArgs,
+  ): Promise<string> {
     this.conversationHistory.value.push({
       role: "user",
       content: message,

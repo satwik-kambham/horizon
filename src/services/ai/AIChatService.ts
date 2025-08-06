@@ -1,19 +1,27 @@
-import { AIChatBackend } from "./AIChatBackend";
+import {
+  AIChatBackend,
+  ExtraChatArgs,
+  MockAIChatBackend,
+} from "./AIChatBackend";
 import { HuggingFaceAIChatBackend } from "./HuggingFaceAIChatBackend";
+import { OpenAIChatBackend } from "./OpenAIChatBackend.ts";
 
 export class AIChatService {
   currentBackend: AIChatBackend;
 
   constructor() {
-    this.currentBackend = new HuggingFaceAIChatBackend();
+    this.currentBackend = new OpenAIChatBackend();
   }
 
   setBackend(backend: AIChatBackend): void {
     this.currentBackend = backend;
   }
 
-  async sendMessage(message: string): Promise<string> {
-    return this.currentBackend.sendMessage(message);
+  async sendMessage(
+    message: string,
+    extraArgs?: ExtraChatArgs,
+  ): Promise<string> {
+    return this.currentBackend.sendMessage(message, extraArgs);
   }
 
   getConversationHistory() {

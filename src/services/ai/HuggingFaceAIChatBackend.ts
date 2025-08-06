@@ -1,42 +1,59 @@
-import { AIChatBackend, ChatMessage } from "./AIChatBackend";
+import { AIChatBackend, ChatMessage, ExtraChatArgs } from "./AIChatBackend";
 import { ref } from "vue";
 
 export class HuggingFaceAIChatBackend implements AIChatBackend {
   public conversationHistory = ref<ChatMessage[]>([]);
   private worker: Worker;
   private status = ref<"ready" | "initializing" | "error">("initializing");
-  public progress = ref<{ file: string, progress: number } | null>(null);
+  public progress = ref<{ file: string; progress: number } | null>(null);
 
   constructor() {
-    this.worker = new Worker(new URL("./HuggingFaceWorker.ts", import.meta.url), {
-      type: 'module',
-    });
-    
+    this.worker = new Worker(
+      new URL("./HuggingFaceWorker.ts", import.meta.url),
+      {
+        type: "module",
+      },
+    );
+
     this.worker.onmessage = (event) => {
-      const { type, status, response, partial_response, error, message, progressInfo } = event.data;
-      
+      const {
+        type,
+        status,
+        response,
+        partial_response,
+        error,
+        message,
+        progressInfo,
+      } = event.data;
+
       if (status) {
         this.status.value = status;
       }
-      
+
       if (type === "progress" && progressInfo) {
         this.progress.value = progressInfo;
       }
-      
+
       if (type === "response" && response) {
         const history = this.conversationHistory.value;
-        if (history.length > 0 && history[history.length - 1].role === "assistant") {
+        if (
+          history.length > 0 &&
+          history[history.length - 1].role === "assistant"
+        ) {
           history[history.length - 1].content = response;
         }
       }
-      
+
       if (type === "partial_response" && partial_response) {
         const history = this.conversationHistory.value;
-        if (history.length > 0 && history[history.length - 1].role === "assistant") {
+        if (
+          history.length > 0 &&
+          history[history.length - 1].role === "assistant"
+        ) {
           history[history.length - 1].content += partial_response;
         }
       }
-      
+
       if (type === "error" && message) {
         console.error(message);
         const fallbackResponse = `Error generating response. Please try again later.`;
@@ -46,11 +63,14 @@ export class HuggingFaceAIChatBackend implements AIChatBackend {
         });
       }
     };
-    
+
     this.worker.postMessage({ type: "initialize" });
   }
 
-  async sendMessage(message: string): Promise<string> {
+  async sendMessage(
+    message: string,
+    extraArgs?: ExtraChatArgs,
+  ): Promise<string> {
     try {
       this.conversationHistory.value.push({
         role: "user",
@@ -62,15 +82,17 @@ export class HuggingFaceAIChatBackend implements AIChatBackend {
         content: "",
       });
 
-      const conversationHistoryCopy = JSON.parse(JSON.stringify(this.conversationHistory.value))
-      
+      const conversationHistoryCopy = JSON.parse(
+        JSON.stringify(this.conversationHistory.value),
+      );
+
       this.worker.postMessage({
         type: "generate",
         payload: {
-          conversationHistory: conversationHistoryCopy
-        }
+          conversationHistory: conversationHistoryCopy,
+        },
       });
-      
+
       return "";
     } catch (error) {
       console.error(

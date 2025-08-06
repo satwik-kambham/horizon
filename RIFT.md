@@ -1,5 +1,19 @@
 # Horizon
 
+This is an AI Chat application.
+
+## Architecture
+
+- `src/components/AIChat.vue`: Main chat interface
+- `src/services`: Chat backends
+  - `AIChatBackend`: Common interface for all backends
+  - Backends:
+    - `MockAIChatBackend`: Example backend implementation
+    - `HuggingFaceAIChatBackend`: `transformers.js` backend
+    - `OpenAIChatBackend`: Backend for all openai compatible apis
+
+## Environment and Tools
+
 This a cross platform desktop and mobile application built with Vite and Tauri.
 
 1. **Fontend**: This is a Vue 3 application using Composition API (using `<script setup>` with TypeScript support, using Vite as the build tool. Pinia is used for state management. Tailwind CSS is used for styling.
