@@ -1,77 +1,80 @@
 <template>
-  <div
-    class="p-4 max-w-2xl mx-auto bg-white rounded-lg shadow-lg max-h-[80vh] overflow-hidden"
-  >
-    <h2 class="text-2xl font-bold mb-4">AI Chat</h2>
-    <div class="mb-4">
-      <div
-        v-if="backendStatus === 'initializing'"
-        class="p-2 bg-yellow-100 text-yellow-800 rounded"
-      >
-        <span class="font-semibold">Initializing:</span> Backend is loading,
-        please wait...
-      </div>
-      <div
-        v-else-if="backendStatus === 'error'"
-        class="p-2 bg-red-100 text-red-800 rounded"
-      >
-        <span class="font-semibold">Error:</span> Backend initialization failed.
-        Please check the console for errors.
-      </div>
-      <div v-else class="p-2 bg-green-100 text-green-800 rounded">
-        <span class="font-semibold">Ready:</span> Backend is ready
-      </div>
-    </div>
-
-    <div v-if="progress && backendStatus !== 'ready'" class="mb-4">
-      <div class="text-sm font-medium mb-1">Loading: {{ progress.file }}</div>
-      <div class="w-full bg-gray-200 rounded-full h-2.5">
+  <div class="flex flex-col h-full w-full">
+    <div class="bg-[#1f1f1f] rounded-lg shadow-lg overflow-hidden flex flex-col h-full w-full min-h-full">
+      <div class="p-4 border-b border-[#333]">
         <div
-          class="bg-blue-600 h-2.5 rounded-full"
-          :style="{ width: (progress.progress ?? 100) + '%' }"
-        ></div>
+          v-if="backendStatus === 'initializing'"
+          class="p-2 bg-[#333] text-yellow-400 rounded"
+        >
+          <span class="font-semibold">Initializing:</span> Backend is loading,
+          please wait...
+        </div>
+        <div
+          v-else-if="backendStatus === 'error'"
+          class="p-2 bg-[#333] text-red-400 rounded"
+        >
+          <span class="font-semibold">Error:</span> Backend initialization failed.
+          Please check the console for errors.
+        </div>
+        <div v-else class="p-2 bg-[#333] text-green-400 rounded">
+          <span class="font-semibold">Ready:</span> Backend is ready
+        </div>
       </div>
-      <div class="text-sm text-gray-600 mt-1">
-        {{ Math.round(progress.progress ?? 100) }}%
+
+      <div v-if="progress && backendStatus !== 'ready'" class="p-4 border-b border-[#333]">
+        <div class="text-sm font-medium mb-1">Loading: {{ progress.file }}</div>
+        <div class="w-full bg-[#333] rounded-full h-2.5">
+          <div
+            class="bg-blue-500 h-2.5 rounded-full"
+            :style="{ width: (progress.progress ?? 100) + '%' }"
+          ></div>
+        </div>
+        <div class="text-sm text-[#aaa] mt-1">
+          {{ Math.round(progress.progress ?? 100) }}%
+        </div>
+      </div>
+      
+      <div class="flex-grow overflow-hidden">
+        <div class="chat-history h-full overflow-y-auto p-4 flex flex-col gap-2">
+          <div
+            v-for="(message, index) in conversationHistory"
+            :key="index"
+            :class="[
+              'p-3 rounded-lg',
+              message.role === 'user'
+                ? 'bg-[#2d2d2d] ml-auto max-w-xs text-right'
+                : 'bg-[#252525]',
+            ]"
+          >
+            <div class="font-bold">{{ message.role }}:</div>
+            <div>{{ message.content }}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="p-4 border-t border-[#333] flex flex-col gap-3">
+        <div class="flex">
+          <input
+            v-model="newMessage"
+            @keyup.enter="sendMessage"
+            class="flex-grow px-4 py-3 bg-[#252525] text-[#aaa] rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Type your message here..."
+          />
+          <button
+            @click="sendMessage"
+            class="bg-blue-500 text-white px-6 py-3 rounded-r-lg hover:bg-blue-600 transition-colors"
+          >
+            Send
+          </button>
+        </div>
+        <button
+          @click="clearConversation"
+          class="bg-red-500 text-white px-4 py-3 rounded hover:bg-red-600 transition-colors"
+        >
+          Clear Conversation
+        </button>
       </div>
     </div>
-    <div
-      class="chat-history mb-4 h-64 overflow-y-auto border p-2 rounded flex flex-col gap-2"
-    >
-      <div
-        v-for="(message, index) in conversationHistory"
-        :key="index"
-        :class="[
-          'p-2 rounded mb-2',
-          message.role === 'user'
-            ? 'bg-blue-100 ml-auto max-w-xs'
-            : 'bg-gray-100',
-        ]"
-      >
-        <div class="font-bold">{{ message.role }}:</div>
-        <div>{{ message.content }}</div>
-      </div>
-    </div>
-    <div class="flex">
-      <input
-        v-model="newMessage"
-        @keyup.enter="sendMessage"
-        class="flex-grow px-3 py-2 border rounded-l-lg focus:outline-none"
-        placeholder="Type your message here..."
-      />
-      <button
-        @click="sendMessage"
-        class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600"
-      >
-        Send
-      </button>
-    </div>
-    <button
-      @click="clearConversation"
-      class="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-full"
-    >
-      Clear Conversation
-    </button>
   </div>
 </template>
 

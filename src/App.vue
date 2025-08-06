@@ -4,8 +4,7 @@ import ApiKeyInput from "./components/ApiKeyInput.vue";
 </script>
 
 <template>
-  <main class="p-4">
-    <ApiKeyInput class="mb-4" />
-    <AIChat />
+  <main class="h-screen flex flex-col">
+    <AIChat class="flex-grow h-full" />
   </main>
 </template>
